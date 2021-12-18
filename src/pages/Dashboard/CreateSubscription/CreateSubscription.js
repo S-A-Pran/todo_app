@@ -51,11 +51,10 @@ const CreateSubscription = () => {
       title,
       notes,
       price,
-      img
+      img,
     };
 
-    console.log(data);
-    fetch(`http://localhost:5000/package`, {
+    fetch(`https://blooming-beach-91976.herokuapp.com/package`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

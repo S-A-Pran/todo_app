@@ -34,7 +34,6 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     e.target.reset();
-    console.log(name, email, pass);
     emailPasswordRegister(name, email, pass, navigate);
   };
 

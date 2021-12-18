@@ -11,11 +11,10 @@ const Subscription = () => {
   // icon imported
   const arrow = <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>;
 
-  console.log(user?.email);
 
   //fetching packages
   useEffect(() => {
-    fetch(`http://localhost:5000/subscription/${user?.email}`)
+    fetch(`https://blooming-beach-91976.herokuapp.com/subscription/${user?.email}`)
       .then((res) => res.json())
       .then((data) => setItem(data));
   }, [user?.email]);
@@ -35,7 +34,7 @@ const Subscription = () => {
                 </h4>
                 <Card.Body>
                   <p>{pack.notes}</p>
-                  <h6>Price: {pack.price} taka</h6>
+                  <h6>Price: {pack.price} USD</h6>
                   <div className="text-center">
                     <Button className="text-light" variant="success">
                       Payment Completed {arrow}

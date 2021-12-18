@@ -19,39 +19,33 @@ const AddNotes = () => {
   const emailLogo = <FontAwesomeIcon icon={faEnvelope}></FontAwesomeIcon>;
   const noteLogo = <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>;
 
-  //collecting email from user input field
+  //fetching subscriptions
+  useEffect(() => {
+    fetch(
+      `https://blooming-beach-91976.herokuapp.com/subscription/${user?.email}`
+    )
+      .then((res) => res.json())
+      .then((data) => setItem(data));
+  }, []);
+
+  // fetching all notes
+  useEffect(() => {
+    fetch(`https://blooming-beach-91976.herokuapp.com/notes/${user?.email}`)
+      .then((res) => res.json())
+      .then((data) => setAddedNote(data));
+  }, []);
+
+  //collecting title from user input field
   const handleTitle = (e) => {
     setTitle(e.target.value);
   };
 
-  //collecting password from password field
+  //collecting note from password field
   const handleNotes = (e) => {
     setNotes(e.target.value);
   };
-  useEffect(() => {
-    fetch(`http://localhost:5000/subscription/${user?.email}`)
-      .then((res) => res.json())
-      .then((data) => setItem(data));
-  }, [user?.email]);
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/notes/${user?.email}`)
-      .then((res) => res.json())
-      .then((data) => setAddedNote(data));
-  }, [user?.email]);
-
-  //checking free limit
-  console.log(addedNote);
-  const matchDate = new Date();
-  const mDate = matchDate.toLocaleDateString();
-  let sum = 0;
-  let i;
-  for (i = 0; i < addedNote.length; i++) {
-    if (addedNote.tDate === mDate) {
-      sum++;
-    }
-  }
-  console.log(sum);
+  console.log(item, addedNote);
 
   //submitting the info for login
   const handleSubmit = (e) => {
@@ -68,8 +62,24 @@ const AddNotes = () => {
       tDate,
     };
 
+    //calling checklist for free user
+    checkLimit(data);
+
+    // const found = addedNote?.filter(f => f.tDate === tDate);
+    // console.log(found);
+
+    //dividing by subcription limit
+
+    e.target.reset();
+  };
+
+  //checklimit for free user
+  const checkLimit = (data) => {
+    const { email, title, notes, tTime, tDate } = data;
+    const found = addedNote?.filter((f) => f.tDate === tDate);
+
     if (item.length > 0) {
-      fetch(`http://localhost:5000/notes`, {
+      fetch(`https://blooming-beach-91976.herokuapp.com/notes`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -85,12 +95,12 @@ const AddNotes = () => {
           }
         });
     } else {
-      if (sum === 5 && tDate === addedNote.tDate) {
-        alert(
-          "You've already used 5 notes today. Buy subscription to get more."
+      if (found.length === 4) {
+        return alert(
+          "You've already used 3 notes today. Buy subscription to get more."
         );
       } else {
-        fetch(`http://localhost:5000/notes`, {
+        fetch(`https://blooming-beach-91976.herokuapp.com/notes`, {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -107,10 +117,6 @@ const AddNotes = () => {
           });
       }
     }
-
-    console.log(data, item, addedNote);
-
-    e.target.reset();
   };
   return (
     <>

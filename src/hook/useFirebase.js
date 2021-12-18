@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
   updateProfile,
   signOut,
+  deleteUser,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
 
@@ -22,12 +23,12 @@ const useFirebase = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [idToken, setIdToken] = useState("");
   const [isDeleted, setIsDeleted] = useState(false);
   const [isShipped, setIsShipped] = useState(false);
 
   const emailPasswordRegister = (name, email, password, navigate) => {
     setLoading(true);
-    console.log(name, email, password);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -54,6 +55,9 @@ const useFirebase = () => {
 
   const emailPasswordSignin = (email, password, navigate) => {
     setLoading(true);
+
+    userAuth(email);
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -98,6 +102,17 @@ const useFirebase = () => {
     return () => unsubscribe;
   }, []);
 
+  const removeUser = () => {
+    const user = auth.currentUser;
+    deleteUser(user)
+      .then(() => {
+        alert("Deleted Successfully");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
   const logOut = () => {
     signOut(auth)
       .then(() => {
@@ -108,21 +123,34 @@ const useFirebase = () => {
       });
   };
 
+  const userAuth = (email) => {
+    const user = { email: email };
+    fetch("https://blooming-beach-91976.herokuapp.com/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => setIdToken(data.accessToken));
+  };
+
   useEffect(() => {
-    fetch(`http://localhost:5000/users/${user.email}`)
+    fetch(`https://blooming-beach-91976.herokuapp.com/users/${user?.email}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data?.role === "admin") {
+        if (data?.admin === true) {
           setIsAdmin(true);
         } else {
           setIsAdmin(false);
         }
       });
-  }, [user.email]);
+  }, [user?.email]);
 
   const saveUser = (name, email, method) => {
     const userInfo = { name, email };
-    fetch("http://localhost:5000/users", {
+    fetch("https://blooming-beach-91976.herokuapp.com/users", {
       method: method,
       headers: {
         "content-type": "application/json",
@@ -141,12 +169,14 @@ const useFirebase = () => {
     isDeleted,
     isShipped,
     isRoleUser,
+    idToken,
     emailPasswordRegister,
     emailPasswordSignin,
     signinWithGoogle,
     setIsShipped,
     setRoleUser,
     setIsDeleted,
+    removeUser,
     logOut,
   };
 };

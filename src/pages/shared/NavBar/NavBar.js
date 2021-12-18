@@ -16,10 +16,15 @@ const NavBar = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
+          {/* used conditional rendering */}
           {!isAdmin ? (
             <Nav className="me-auto">
-              <Nav.Link as={Link} to='/mysubscription'>Your Subcriptions</Nav.Link>
-              <Nav.Link href="#pricing">Profile</Nav.Link>
+              <Nav.Link as={Link} to="/mysubscription">
+                Your Subcriptions
+              </Nav.Link>
+              <Nav.Link as={Link} to="/profile">
+                Profile
+              </Nav.Link>
               <NavDropdown title="Dashboard" id="collasible-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/allnotes">
                   All notes
@@ -31,8 +36,9 @@ const NavBar = () => {
             </Nav>
           ) : (
             <Nav className="me-auto">
-              <Nav.Link href="#features">Your Subcriptions</Nav.Link>
-              <Nav.Link href="#pricing">Profile</Nav.Link>
+              <Nav.Link as={Link} to="/profile">
+                Profile
+              </Nav.Link>
               <NavDropdown title="Dashboard" id="collasible-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/allusers">
                   View User

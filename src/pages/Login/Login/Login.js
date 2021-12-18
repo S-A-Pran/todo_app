@@ -27,7 +27,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     e.target.reset();
-    console.log(email, pass);
+
     emailPasswordSignin(email, pass, navigate);
   };
   return (

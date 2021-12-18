@@ -4,26 +4,19 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import useAuth from "../../../hook/useAuth";
 import NavBar from "../../shared/NavBar/NavBar";
+import PayPal from "../PayPal/PayPal";
 
 const Confirm = () => {
   //storing email and password in a state
   const [item, setItem] = useState({});
+  const [checkOut, setCheckOut] = useState(false);
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-//   paypal info
-  const initialOptions = {
-    "client-id": `${process.env.CLIENT_ID}`,
-    currency: "USD",
-    intent: "capture",
-    "data-client-token": "abc123xyz==",
-};
-
-  console.log(id);
 
 
   useEffect(() => {
-    fetch(`http://localhost:5000/package/${id}`)
+    fetch(`https://blooming-beach-91976.herokuapp.com/package/${id}`)
       .then((res) => res.json())
       .then((data) => setItem(data));
   }, [id]);
@@ -31,26 +24,27 @@ const Confirm = () => {
   //submit button
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = {
-        ...item,
-        email: user.email
-    }
-    // posting the buying info
-    fetch("http://localhost:5000/subscription", {
-        method: "POST",
-        headers: {
-            "content-type": "application/json"
-        },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.insertedId){
-            alert("Order Placed Successfully");
-        }
-    })
-    console.log(data);
-    navigate('/')
+
+    // const data = {
+    //   ...item,
+    //   email: user.email,
+    // };
+    // // posting the buying info
+    // fetch("https://blooming-beach-91976.herokuapp.com/subscription", {
+    //   method: "POST",
+    //   headers: {
+    //     "content-type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     if (data.insertedId) {
+    //       alert("Order Placed Successfully");
+    //     }
+    //   });
+
+    navigate("/paypal");
   };
   return (
     <>
@@ -66,7 +60,7 @@ const Confirm = () => {
           </div>
           <div className="p-5 shadow rounded">
             <h5 className="text-primary fw-bold text-center p-2 rounded-pill shadow-lg mb-4">
-              Add Notes
+              Confirm Payment
             </h5>
             <Form noValidate onSubmit={handleSubmit}>
               <Row className="mb-3">
@@ -76,7 +70,7 @@ const Confirm = () => {
                     <Form.Control
                       type="text"
                       placeholder="Pack Name"
-                      value={item.title}
+                      defaultValue={item.title}
                       aria-describedby="inputGroupPrepend"
                       required
                     />
@@ -90,7 +84,7 @@ const Confirm = () => {
                     <Form.Control
                       type="text"
                       placeholder="Customer Name"
-                      value={user.displayName}
+                      defaultValue={user.displayName}
                       aria-describedby="inputGroupPrepend"
                       required
                     />
@@ -105,6 +99,7 @@ const Confirm = () => {
                       type="text"
                       placeholder="Customer Name"
                       value={item.price}
+                      readOnly
                       aria-describedby="inputGroupPrepend"
                       required
                     />
@@ -112,17 +107,21 @@ const Confirm = () => {
                 </Form.Group>
               </Row>
 
-              <div className="text-center">
-                <PayPalScriptProvider
-                  options={initialOptions}
-                >
-                  <PayPalButtons style={{ layout: "horizontal" }} />
-                </PayPalScriptProvider>
+              {/* <div className="text-center">
                 <Button type="submit" variant="primary">
-                    Buy Now
+                  Buy Now
+                </Button>
+              </div> */}
+            </Form>
+            {checkOut ? (
+              <PayPal item={item}></PayPal>
+            ) : (
+              <div className="text-center">
+                <Button onClick={() => setCheckOut(true)} variant="primary">
+                  Buy Now
                 </Button>
               </div>
-            </Form>
+            )}
           </div>
         </div>
       </Container>
