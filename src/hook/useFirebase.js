@@ -27,6 +27,7 @@ const useFirebase = () => {
   const [isDeleted, setIsDeleted] = useState(false);
   const [isShipped, setIsShipped] = useState(false);
 
+  //email password based sign up
   const emailPasswordRegister = (name, email, password, navigate) => {
     setLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
@@ -53,6 +54,7 @@ const useFirebase = () => {
       .finally(() => setLoading(false));
   };
 
+  //email password based sign in
   const emailPasswordSignin = (email, password, navigate) => {
     setLoading(true);
 
@@ -73,6 +75,7 @@ const useFirebase = () => {
       .finally(() => setLoading(false));
   };
 
+  //google based sign in
   const signinWithGoogle = (history, destination) => {
     setLoading(true);
     signInWithPopup(auth, googleProvider)
@@ -91,6 +94,7 @@ const useFirebase = () => {
       .then(() => setLoading(false));
   };
 
+  //storing users state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -102,6 +106,7 @@ const useFirebase = () => {
     return () => unsubscribe;
   }, []);
 
+  //remove user function
   const removeUser = () => {
     const user = auth.currentUser;
     deleteUser(user)
@@ -113,6 +118,7 @@ const useFirebase = () => {
       });
   };
 
+  //logout function
   const logOut = () => {
     signOut(auth)
       .then(() => {
@@ -123,6 +129,7 @@ const useFirebase = () => {
       });
   };
 
+  //user authentiv=catiin token genration on login
   const userAuth = (email) => {
     const user = { email: email };
     fetch("https://blooming-beach-91976.herokuapp.com/login", {
@@ -136,6 +143,7 @@ const useFirebase = () => {
       .then((data) => setIdToken(data.accessToken));
   };
 
+  //setting admin
   useEffect(() => {
     fetch(`https://blooming-beach-91976.herokuapp.com/users/${user?.email}`)
       .then((res) => res.json())
@@ -150,6 +158,7 @@ const useFirebase = () => {
 
   console.log(isAdmin);
 
+  //saving user info to database
   const saveUser = (name, email, method) => {
     const userInfo = { name, email };
     fetch("https://blooming-beach-91976.herokuapp.com/users", {
