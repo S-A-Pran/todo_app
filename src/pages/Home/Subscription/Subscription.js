@@ -11,10 +11,11 @@ const Subscription = () => {
   // icon imported
   const arrow = <FontAwesomeIcon icon={faCheckCircle}></FontAwesomeIcon>;
 
-
   //fetching packages
   useEffect(() => {
-    fetch(`https://blooming-beach-91976.herokuapp.com/subscription/${user?.email}`)
+    fetch(
+      `https://blooming-beach-91976.herokuapp.com/subscription/${user?.email}`
+    )
       .then((res) => res.json())
       .then((data) => setItem(data));
   }, [user?.email]);
@@ -22,7 +23,9 @@ const Subscription = () => {
     <>
       <NavBar></NavBar>
       <Container>
-        <h3 className="my-5 text-primary fw-bold">Your Subcriptions {item.length}</h3>
+        <h3 className="my-5 text-primary fw-bold">
+          Your Subcriptions {item.length}
+        </h3>
         <Row className="my-5">
           {item.map((pack) => (
             //   used bootstrap card

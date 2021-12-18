@@ -14,7 +14,6 @@ const Confirm = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-
   useEffect(() => {
     fetch(`https://blooming-beach-91976.herokuapp.com/package/${id}`)
       .then((res) => res.json())

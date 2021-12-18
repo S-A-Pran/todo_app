@@ -148,6 +148,8 @@ const useFirebase = () => {
       });
   }, [user?.email]);
 
+  console.log(isAdmin);
+
   const saveUser = (name, email, method) => {
     const userInfo = { name, email };
     fetch("https://blooming-beach-91976.herokuapp.com/users", {

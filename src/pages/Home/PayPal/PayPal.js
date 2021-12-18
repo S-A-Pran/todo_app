@@ -38,7 +38,7 @@ function PayPal({ item }) {
       .then((data) => {
         if (data.insertedId) {
           alert("Order Placed Successfully");
-          navigate('mysubscription')
+          navigate("mysubscription");
         }
       });
     return actions.order.capture();
